@@ -1,0 +1,6 @@
+Auto Generated Code Documentation
+=================================
+.. automodule:: hw1_Tevathia_Neha
+	:members:
+	:undoc-members:
+	

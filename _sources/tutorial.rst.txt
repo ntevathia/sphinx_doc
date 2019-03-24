@@ -1,0 +1,3 @@
+My Code Tutorial
+================
+Run $python hw1_Tevathia_Neha.py on your terminal.
