@@ -9,11 +9,10 @@
     <title>hw1_Tevathia_Neha &#8212; HW1 0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
    
@@ -28,66 +27,66 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <h1>Source code for hw1_Tevathia_Neha</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">paramiko</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">expanduser</span>
 
+
 <div class="viewcode-block" id="ssh_client"><a class="viewcode-back" href="../code.html#hw1_Tevathia_Neha.ssh_client">[docs]</a><span class="k">def</span> <span class="nf">ssh_client</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Return ssh client object&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHClient</span><span class="p">()</span></div>
 
+
 <div class="viewcode-block" id="ssh_connection"><a class="viewcode-back" href="../code.html#hw1_Tevathia_Neha.ssh_connection">[docs]</a><span class="k">def</span> <span class="nf">ssh_connection</span><span class="p">(</span><span class="n">ssh</span><span class="p">,</span> <span class="n">ec2_address</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">key_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Connect with an ec2 instance using key_file (conatining .pem)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ssh</span><span class="o">.</span><span class="n">set_missing_host_key_policy</span><span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">AutoAddPolicy</span><span class="p">())</span>
-    <span class="n">ssh</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">ec2_address</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">key_filename</span><span class="o">=</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">key_file</span><span class="p">)</span>
+    <span class="n">ssh</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">ec2_address</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
+                <span class="n">key_filename</span><span class="o">=</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">key_file</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ssh</span></div>
 
+
 <div class="viewcode-block" id="create_or_update_environment"><a class="viewcode-back" href="../code.html#hw1_Tevathia_Neha.create_or_update_environment">[docs]</a><span class="k">def</span> <span class="nf">create_or_update_environment</span><span class="p">(</span><span class="n">ssh</span><span class="p">):</span>
-    <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="s2">&quot;conda env create -f ~/msds603_instructor/environment.yml&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create new environment from the .yml file; if already exists</span>
+<span class="sd">    update the environment using .yml file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> \
+        <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="s2">&quot;conda env create -f &quot;</span>
+                         <span class="s2">&quot;~/MSDS603/environment.yml&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="sa">b</span><span class="s1">&#39;already exists&#39;</span> <span class="ow">in</span> <span class="n">stderr</span><span class="o">.</span><span class="n">read</span><span class="p">()):</span>
-        <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="s2">&quot;conda env update -f ~/msds603_instructor/environment.yml&quot;</span><span class="p">)</span>
+        <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> \
+            <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="s2">&quot;conda env update -f &quot;</span>
+                             <span class="s2">&quot;~/MSDS603/environment.yml&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
 
+
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../code.html#hw1_Tevathia_Neha.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">ec2_address</span> <span class="o">=</span> <span class="s2">&quot;ec2-12-123-123-123.us-west-2.compute.amazonaws.com&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initiate ssh client, connect with ec2 instance and update the environment</span>
+<span class="sd">    using.yml file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ec2_address</span> <span class="o">=</span> <span class="s2">&quot;ec2-34-217-102-137.us-west-2.compute.amazonaws.com&quot;</span>
     <span class="n">user</span> <span class="o">=</span> <span class="s2">&quot;ec2-user&quot;</span>
-    <span class="n">key_file</span> <span class="o">=</span> <span class="s2">&quot;/.ssh/msan603.pem&quot;</span>
+    <span class="n">key_file</span> <span class="o">=</span> <span class="s2">&quot;/Desktop/aws_neha_oregon.pem&quot;</span>
 
     <span class="n">ssh</span> <span class="o">=</span> <span class="n">ssh_client</span><span class="p">()</span>
     <span class="n">ssh_connection</span><span class="p">(</span><span class="n">ssh</span><span class="p">,</span> <span class="n">ec2_address</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">key_file</span><span class="p">)</span>
     <span class="n">create_or_update_environment</span><span class="p">(</span><span class="n">ssh</span><span class="p">)</span></div>
 
 
-<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">HW1</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">My Code Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../code.html">Auto Generated Code Documentation</a></li>
-</ul>
-
-<div class="relations">
+        <div class="sphinxsidebarwrapper"><div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
@@ -108,14 +107,6 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
@@ -124,8 +115,8 @@
       &copy;2019, Neha Tevathia.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>
 
